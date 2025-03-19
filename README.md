@@ -14,3 +14,12 @@
 Запустить проект со сборкой: `npm run start`
 
 ## Ссылки:
+
+Ссылка на деплоймент: https://stirring-kringle-1697b2.netlify.app/
+
+Страница входа: https://stirring-kringle-1697b2.netlify.app/
+Страница регистрации: https://stirring-kringle-1697b2.netlify.app/sign-up
+Страница 404: https://stirring-kringle-1697b2.netlify.app/404
+Страница 500: https://stirring-kringle-1697b2.netlify.app/500
+Страница профиля: https://stirring-kringle-1697b2.netlify.app/profile
+Страница чата: https://stirring-kringle-1697b2.netlify.app/chat
