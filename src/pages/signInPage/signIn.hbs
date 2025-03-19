@@ -1,0 +1,11 @@
+<main class="content-wrapper">
+    <section class="form-wrapper">
+        {{> Title text='Вход' }}
+        <form class="form" action="http://localhost:3000/profile" method="post">
+            {{> Input title='Логин' id='sign-in-form-login' name='login' placeholder='Введите логин'}}
+            {{> Input title='Пароль' id='sign-in-form-password' name='password' placeholder='Введите пароль'}}
+            {{> Button id='sign-in-form-button' type='submit' text='Войти'}}
+        </form>
+        {{> Link href='/' id='link-to-sign-up' text='Нет аккаунта?' variant='secondary' }}
+    </section>
+</main>
