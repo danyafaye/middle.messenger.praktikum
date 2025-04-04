@@ -1,0 +1,101 @@
+//variables
+$tablet-media-width: 768px;
+
+@mixin font-small-12-400 {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+}
+
+@mixin font-standard-14-400 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: normal;
+}
+
+@mixin font-standard-14-600 {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: normal;
+}
+
+@mixin font-standard-18-400 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: normal;
+}
+
+@mixin font-standard-24-500 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: normal;
+}
+
+@mixin font-heading-32-400 {
+  font-weight: 400;
+  font-size: 32px;
+  line-height: normal;
+}
+
+@mixin font-heading-64-400 {
+  font-weight: 400;
+  font-size: 64px;
+  line-height: normal;
+}
+
+@mixin font-heading-96-600 {
+  font-weight: 600;
+  font-size: 96px;
+  line-height: 100px;
+}
+
+@mixin font-small-12-400-gray {
+  @include font-small-12-400;
+
+  color: var(--gray800)
+}
+
+@mixin font-standard-14-400-black {
+  @include font-standard-14-400;
+
+  color: var(--black800);
+}
+
+@mixin font-standard-14-400-gray {
+  @include font-standard-14-400;
+
+  color: var(--gray800);
+}
+
+@mixin font-standard-14-400-white {
+  @include font-standard-14-400;
+
+  color: var(--white);
+}
+
+@mixin font-standard-18-400-gray {
+  @include font-standard-18-400;
+
+  color: var(--gray800);
+}
+
+@mixin font-heading-32-400-gray {
+  @include font-heading-32-400;
+
+  color: var(--gray800);
+}
+
+@mixin font-heading-32-600-white {
+  font-weight: 600;
+  font-size: 32px;
+  color: var(--white);
+  line-height: normal;
+}
+
+//adaptive
+
+@mixin max-width-tablet() {
+  @media only screen and (max-width: $tablet-media-width) {
+    @content;
+  }
+}

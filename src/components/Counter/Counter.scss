@@ -1,0 +1,11 @@
+@use '@/styles/var';
+
+.counter {
+  padding: 0 4px;
+  min-width: 20px;
+  border-radius: 16px;
+  width: auto;
+  background-color: var(--blue800);
+  line-height: 20px;
+  text-align: center;
+}

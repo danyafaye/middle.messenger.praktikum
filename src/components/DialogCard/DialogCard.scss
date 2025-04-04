@@ -1,0 +1,26 @@
+@use '@/styles/var';
+
+.dialog-card {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: var(--standard-border);
+  transition: background-color .2s ease-in-out;
+  cursor: pointer;
+  gap: 4px;
+
+  &:hover {
+    background-color: var(--gray1000);
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-time {
+    @include var.font-small-12-400-gray;
+  }
+}

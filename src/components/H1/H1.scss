@@ -1,0 +1,9 @@
+@use '@/styles/var';
+
+.heading {
+  &-first {
+    @include var.font-heading-96-600;
+
+    margin: 0;
+  }
+}
