@@ -1,0 +1,55 @@
+@use '@/styles/var';
+
+.avatar {
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-info {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  &-name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+
+    @include var.font-standard-14-600;
+  }
+
+  &-message {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+
+    @include var.font-standard-14-400-gray;
+  }
+
+  &-image {
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+
+    &-plug {
+      background-color: var(--gray900);
+    }
+
+    &-big {
+      height: 50px;
+      width: 50px;
+      min-width: 50px;
+    }
+  }
+}
