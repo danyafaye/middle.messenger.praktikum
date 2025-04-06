@@ -31,3 +31,5 @@ export type BlockInstance<T extends BlockProps = {}> = {
   hide: () => void;
   _render: () => void;
 };
+
+export type BlockEventHandler = EventListener | { selector: string; handler: EventListener };
