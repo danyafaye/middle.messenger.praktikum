@@ -15,40 +15,54 @@ const template = `<main class="content-wrapper">
                 </div>
                 <span class="profile-avatar-name">Данила</span>
             </article>
-            <ul class="profile-tab-list">
-                <li class="profile-tab {{#if personalInfo}}profile-tab-active{{/if}}" id="tab-personal-info">Персональная информация</li>
-                <li class="profile-tab {{#unless personalInfo}}profile-tab-active{{/unless}}" id="tab-change-pass">Смена пароля</li>
-            </ul>
+            {{{ TabList }}}
             {{#if personalInfo}}
-                <form class="form" method="post">
-                    <div class="form-row">
-                        {{{ InputMail }}}
-                        {{{ InputLogin }}}
-                    </div>
-                    <div class="form-row">
-                        {{{ InputName }}}
-                        {{{ InputSurname }}}
-                    </div>
-                    <div class="form-row">
-                        {{{ InputDisplayName }}}
-                        {{{ InputPhone }}}
-                    </div>
-
-                  {{{ ButtonSubmit }}}
-                  {{{ ButtonLeave }}}
-                </form>
+              {{{ PersonalInfoForm }}}
             {{else}}
-                <form class="form" method="post">
-                    {{{ InputOldPass }}}
-                    {{{ InputNewPass }}}
-                    {{{ InputRepeatPass }}}
-                  {{{ ButtonSubmit }}}
-                  {{{ ButtonLeave }}}
-                </form>
+              {{{ ChangePasswordForm }}}
             {{/if}}
         </section>
     </div>
 </main>`;
+
+//language=hbs
+const tabListTemplate = `
+  <ul class="profile-tab-list">
+    <li data-tab="personal" class="profile-tab profile-tab-active" id="tab-personal-info">Персональная информация</li>
+    <li data-tab="password" class="profile-tab" id="tab-change-pass">Смена пароля</li>
+  </ul>
+`;
+
+//language=hbs
+const personalInfoFormTemplate = `
+  <form class="form" method="post">
+    <div class="form-row">
+      {{{ InputMail }}}
+      {{{ InputLogin }}}
+    </div>
+    <div class="form-row">
+      {{{ InputName }}}
+      {{{ InputSurname }}}
+    </div>
+    <div class="form-row">
+      {{{ InputDisplayName }}}
+      {{{ InputPhone }}}
+    </div>
+    {{{ ButtonSubmit }}}
+    {{{ ButtonLeave }}}
+  </form>
+`;
+
+//language=hbs
+const changePasswordFormTemplate = `
+  <form class="form" method="post">
+    {{{ InputOldPass }}}
+    {{{ InputNewPass }}}
+    {{{ InputRepeatPass }}}
+    {{{ ButtonSubmit }}}
+    {{{ ButtonLeave }}}
+  </form>
+`;
 
 const sideButtonTemplate = `<button class="profile-side-button" id="profile-side-button">
         <img src="/assets/backIcon.svg" alt="backIcon" class="profile-side-button-img">
@@ -56,75 +70,67 @@ const sideButtonTemplate = `<button class="profile-side-button" id="profile-side
 
 const avatarIconTemplate = `<img id='avatar-icon' src="/assets/avatarPlug.png" alt='avatarPlug' class="profile-avatar-icon"/>`;
 
-const bindTabEvents = (block: BlockInstance) => {
-  const el = block.getContent();
-  const tabList = el.querySelector('.profile-tab-list');
-  if (!tabList) return;
-  tabList.addEventListener('click', (e: Event) => {
-    const target = e.target as HTMLElement;
-    if (target.id === 'tab-personal-info') {
-      block.setProps({ personalInfo: true });
-    } else if (target.id === 'tab-change-pass') {
-      block.setProps({ personalInfo: false });
-    }
-  });
-};
-
-export const createProfilePage = (): BlockInstance => {
+const createPersonalInfoForm = (): BlockInstance => {
   const inputMail = createInput({
     name: 'email',
     placeholder: 'Введите почту',
     type: 'email',
     id: 'profile-form-email',
     title: 'Почта',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
   });
   const inputLogin = createInput({
     name: 'login',
     placeholder: 'Введите логин',
     id: 'profile-form-login',
     title: 'Логин',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
   });
   const inputName = createInput({
     name: 'first_name',
     placeholder: 'Введите имя',
     id: 'profile-form-first_name',
     title: 'Имя',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
   });
   const inputSurname = createInput({
     name: 'second_name',
     placeholder: 'Введите фамилию',
     id: 'profile-form-second_name',
     title: 'Фамилия',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
   });
   const inputDisplayName = createInput({
     name: 'display_name',
     placeholder: 'Введите имя в чате',
     id: 'profile-form-display_name',
     title: 'Имя в чате',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
   });
   const inputPhone = createInput({
     name: 'phone',
     placeholder: 'Введите телефон',
     id: 'profile-form-phone',
     title: 'Телефон',
-  });
-  const inputOldPass = createInput({
-    name: 'oldPassword',
-    placeholder: 'Введите старый пароль',
-    id: 'profile-form-oldPassword',
-    title: 'Текущий пароль',
-  });
-  const inputNewPass = createInput({
-    name: 'newPassword',
-    placeholder: 'Введите новый пароль',
-    id: 'profile-form-newPassword',
-    title: 'Новый пароль',
-  });
-  const inputRepeatPass = createInput({
-    name: 'repeat_newPassword',
-    placeholder: 'Введите новый пароль ещё раз',
-    id: 'profile-form-repeat_newPassword',
-    title: 'Повторите новый пароль',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
   });
   const buttonSubmit = createButton({
     id: 'profile-form-button-save',
@@ -137,15 +143,108 @@ export const createProfilePage = (): BlockInstance => {
     colorType: 'red',
     text: 'Выйти из аккаунта',
   });
-  const sideButton = createBlock({
+
+  return createBlock({
+    InputMail: inputMail,
+    InputLogin: inputLogin,
+    InputName: inputName,
+    InputSurname: inputSurname,
+    InputDisplayName: inputDisplayName,
+    InputPhone: inputPhone,
+    ButtonSubmit: buttonSubmit,
+    ButtonLeave: buttonLeave,
     events: {
-      click: () => {
-        history.back();
+      submit: (e: Event) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const inputs = form.querySelectorAll('input');
+        bindFormSubmit(inputs, 'Персональные данные:');
       },
     },
-    render: () => sideButtonTemplate,
+    render: () => personalInfoFormTemplate,
   });
-  const avatarIcon = createBlock({
+};
+
+const createChangePasswordForm = (): BlockInstance => {
+  const inputOldPass = createInput({
+    name: 'oldPassword',
+    placeholder: 'Введите старый пароль',
+    id: 'profile-form-oldPassword',
+    title: 'Текущий пароль',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
+  });
+  const inputNewPass = createInput({
+    name: 'newPassword',
+    placeholder: 'Введите новый пароль',
+    id: 'profile-form-newPassword',
+    title: 'Новый пароль',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
+  });
+  const inputRepeatPass = createInput({
+    name: 'repeat_newPassword',
+    placeholder: 'Введите новый пароль ещё раз',
+    id: 'profile-form-repeat_newPassword',
+    title: 'Повторите новый пароль',
+    onBlur: (e: FocusEvent) => {
+      const inputEl = e.target as HTMLInputElement;
+      bindFieldValidation(inputEl);
+    },
+  });
+  const buttonSubmit = createButton({
+    id: 'profile-form-button-save',
+    type: 'submit',
+    colorType: 'blue',
+    text: 'Сохранить изменения',
+  });
+  const buttonLeave = createButton({
+    id: 'profile-button-leave',
+    colorType: 'red',
+    text: 'Выйти из аккаунта',
+  });
+  return createBlock({
+    InputOldPass: inputOldPass,
+    InputNewPass: inputNewPass,
+    InputRepeatPass: inputRepeatPass,
+    ButtonSubmit: buttonSubmit,
+    ButtonLeave: buttonLeave,
+    events: {
+      submit: (e: Event) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const inputs = form.querySelectorAll('input');
+        bindFormSubmit(inputs, 'Данные смены пароля:');
+      },
+    },
+    render: () => changePasswordFormTemplate,
+  });
+};
+
+const onTabClick = (personalInfo: boolean, liElement: HTMLLIElement): void => {
+  profilePageInstance.setProps({ personalInfo });
+  const tabListContainer = liElement.parentElement;
+  if (tabListContainer) {
+    tabListContainer.querySelectorAll('li').forEach((li) => {
+      li.classList.remove('profile-tab-active');
+    });
+  }
+  liElement.classList.add('profile-tab-active');
+};
+
+let profilePageInstance: BlockInstance;
+
+profilePageInstance = createBlock({
+  personalInfo: true,
+  SideButton: createBlock({
+    events: { click: () => history.back() },
+    render: () => sideButtonTemplate,
+  }),
+  AvatarIcon: createBlock({
     events: {
       mouseenter: () => {
         const textEl = document.querySelector('#avatar-change-text');
@@ -157,41 +256,27 @@ export const createProfilePage = (): BlockInstance => {
       },
     },
     render: () => avatarIconTemplate,
-  });
-
-  return createBlock({
+  }),
+  PersonalInfoForm: createPersonalInfoForm(),
+  ChangePasswordForm: createChangePasswordForm(),
+  TabList: createBlock({
     personalInfo: true,
-    InputMail: inputMail,
-    InputLogin: inputLogin,
-    InputName: inputName,
-    InputSurname: inputSurname,
-    InputDisplayName: inputDisplayName,
-    InputPhone: inputPhone,
-    InputOldPass: inputOldPass,
-    InputNewPass: inputNewPass,
-    InputRepeatPass: inputRepeatPass,
-    ButtonSubmit: buttonSubmit,
-    ButtonLeave: buttonLeave,
-    SideButton: sideButton,
-    AvatarIcon: avatarIcon,
-    render: () => template,
-    componentDidMount: (block: BlockInstance) => {
-      bindTabEvents(block);
-      const form = block.getContent().querySelector('form');
-      if (form) {
-        bindFormSubmit(form);
-      }
+    events: {
+      click: {
+        selector: 'li',
+        handler: (e: Event) => {
+          const li = (e.target as HTMLElement).closest('li');
+          if (!li) return;
+          const tab = li.dataset.tab;
+          onTabClick(tab === 'personal', li);
+        },
+      },
     },
-    afterRender: (block: BlockInstance) => {
-      bindTabEvents(block);
-      const form = block.getContent().querySelector('form');
-      const inputs = block.getContent().querySelectorAll('input');
-      inputs.forEach((input: HTMLInputElement) => {
-        bindFieldValidation(input as HTMLInputElement);
-      });
-      if (form) {
-        bindFormSubmit(form);
-      }
-    },
-  });
+    render: () => tabListTemplate,
+  }),
+  render: () => template,
+});
+
+export const createProfilePage = (): BlockInstance => {
+  return profilePageInstance;
 };

@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars';
 import { createEventBus } from './EventBus';
 import { getChildrenPropsAndProps, makePropsProxy } from '@utils';
-import { BLOCK_EVENTS, BlockEvents, BlockInstance, BlockProps } from '@models';
+import { BLOCK_EVENTS, BlockEventHandler, BlockEvents, BlockInstance, BlockProps } from '@models';
 import { v4 as makeUUID } from 'uuid';
 
 export const createBlock = <T extends BlockProps = {}>(
@@ -25,10 +25,41 @@ export const createBlock = <T extends BlockProps = {}>(
   const render = (_props.render as () => string) || (() => '');
 
   const _addEvents = (): void => {
-    const events = _props.events as Record<string, EventListener> | undefined;
+    const events = _props.events as Record<string, BlockEventHandler> | undefined;
     if (_element && events) {
-      Object.keys(events).forEach((eventName) => {
-        _element!.addEventListener(eventName, events[eventName]);
+      Object.entries(events).forEach(([eventName, handlerOrObj]) => {
+        if (typeof handlerOrObj === 'function') {
+          _element!.addEventListener(eventName, handlerOrObj);
+        } else if (
+          typeof handlerOrObj === 'object' &&
+          handlerOrObj.selector &&
+          typeof handlerOrObj.handler === 'function'
+        ) {
+          const childEls = _element!.querySelectorAll(handlerOrObj.selector);
+          childEls.forEach((childEl) => {
+            childEl.addEventListener(eventName, handlerOrObj.handler);
+          });
+        }
+      });
+    }
+  };
+
+  const _removeEvents = (): void => {
+    const events = _props.events as Record<string, BlockEventHandler> | undefined;
+    if (_element && events) {
+      Object.entries(events).forEach(([eventName, handlerOrObj]) => {
+        if (typeof handlerOrObj === 'function') {
+          _element!.removeEventListener(eventName, handlerOrObj);
+        } else if (
+          typeof handlerOrObj === 'object' &&
+          handlerOrObj.selector &&
+          typeof handlerOrObj.handler === 'function'
+        ) {
+          const childEls = _element!.querySelectorAll(handlerOrObj.selector);
+          childEls.forEach((childEl) => {
+            childEl.removeEventListener(eventName, handlerOrObj.handler);
+          });
+        }
       });
     }
   };
@@ -61,6 +92,10 @@ export const createBlock = <T extends BlockProps = {}>(
     document.createElement(tagName) as HTMLTemplateElement;
 
   const _render = (): void => {
+    if (_element) {
+      _removeEvents();
+    }
+
     const propsAndStubs = { ..._props };
     const tmpId = makeUUID();
 
@@ -127,9 +162,7 @@ export const createBlock = <T extends BlockProps = {}>(
     eventBus.emit(BLOCK_EVENTS.RENDER);
   };
 
-  const getProps = () => {
-    return _props;
-  };
+  const getProps = () => _props;
 
   eventBus.on(BLOCK_EVENTS.INIT, init);
   eventBus.on(BLOCK_EVENTS.COMPONENT_DID_MOUNT, _componentDidMount);
