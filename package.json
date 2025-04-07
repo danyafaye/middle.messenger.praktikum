@@ -10,14 +10,34 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 3000",
-    "start": "vite build && vite preview --port 3000"
+    "start": "vite build && vite preview --port 3000",
+    "lint": "eslint src --ext .ts,.js",
+    "format": "prettier --write .",
+    "lint:style": "stylelint 'src/**/*.{css,scss}'",
+    "lint:style:fix": "stylelint 'src/**/*.{css,scss}' --fix"
   },
   "devDependencies": {
+    "@types/node": "^22.13.14",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "eslint": "^9.23.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-import-resolver-typescript": "^4.2.3",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "prettier": "^3.5.3",
     "sass": "^1.85.1",
+    "stylelint": "^15.10.3",
+    "stylelint-config-standard": "^34.0.0",
+    "stylelint-config-standard-scss": "^9.0.0",
+    "stylelint-scss": "^4.5.0",
+    "typescript": "^5.8.2",
     "vite": "^6.2.0"
   },
   "dependencies": {
     "handlebars": "^4.7.8",
+    "uuid": "^11.1.0",
     "vite-plugin-handlebars": "^2.0.0"
   }
 }

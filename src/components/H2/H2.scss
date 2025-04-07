@@ -1,0 +1,9 @@
+@use '@/styles/var';
+
+.heading {
+  &-second {
+    @include var.font-heading-64-400;
+
+    margin: 0;
+  }
+}

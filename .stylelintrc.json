@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-standard-scss"
+  ],
+  "plugins": ["stylelint-scss"],
+  "rules": {
+    "indentation": [2, { "severity": "error" }],
+    "string-quotes": ["single", { "severity": "error" }],
+    "color-hex-case": ["lower", { "severity": "warning" }],
+    "max-nesting-depth": [3, { "severity": "warning" }],
+    "selector-class-pattern": [
+      "^([a-z0-9\\-]+|[A-Z][a-zA-Z0-9]+)$",
+      {
+        "message": "Классы должны быть в kebab-case или PascalCase",
+        "severity": "warning"
+      }
+    ],
+    "no-descending-specificity": null,
+    "scss/double-slash-comment-whitespace-inside": null,
+    "media-query-no-invalid": null
+  }
+}

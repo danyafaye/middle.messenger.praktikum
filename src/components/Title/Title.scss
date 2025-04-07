@@ -1,0 +1,11 @@
+@use '@/styles/var';
+
+.title {
+  @include var.font-heading-32-600-white;
+
+  margin: 0;
+
+  &-sub {
+    @include var.font-heading-32-400-gray;
+  }
+}

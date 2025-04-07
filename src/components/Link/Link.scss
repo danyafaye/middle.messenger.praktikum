@@ -1,0 +1,55 @@
+@use '@/styles/var';
+
+.link {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  text-decoration: none;
+  transition: color .2s ease-in-out;
+
+  path {
+    transition: color .2s ease-in-out;
+  }
+
+  @include var.font-standard-14-400;
+
+  &-secondary {
+    color: var(--gray800);
+
+    path {
+      color: var(--gray800);
+    }
+
+    &:hover {
+      color: var(--gray700);
+
+      path {
+        color: var(--gray700);
+      }
+    }
+  }
+
+  &-primary {
+    color: var(--blue600);
+
+    path {
+      color: var(--blue600);
+    }
+
+    &:hover {
+      color: var(--blue500);
+
+      path {
+        color: var(--blue500);
+      }
+    }
+  }
+
+  &-big {
+    @include var.font-standard-18-400;
+  }
+
+  &-standard-bold {
+    @include var.font-standard-14-600;
+  }
+}

@@ -1,0 +1,77 @@
+@use '@/styles/var';
+
+.button {
+  //common button styles
+
+  transition: background-color .2s ease-in-out;
+
+  svg {
+    path {
+      transition: color .2s ease-in-out;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  //sizes
+
+  &-icon {
+    padding: 4px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  &-medium {
+    border-radius: 6px;
+    min-height: 32px;
+    height: 100%;
+    padding: 8px 0;
+    width: 100%;
+  }
+
+  //colorTypes
+
+  &-transparent {
+    background-color: transparent;
+    color: var(--gray800);
+
+    &:hover {
+      color: var(--white);
+    }
+  }
+
+  &-standard {
+    background: var(--gray600);
+
+    @include var.font-standard-14-400-black;
+
+    &:hover, &:focus {
+      outline: none;
+      background: var(--gray700);
+    }
+  }
+
+  &-blue {
+    @include var.font-standard-14-400-white;
+
+    background: var(--blue800);
+
+    &:hover, &:focus {
+      outline: none;
+      background: var(--blue700);
+    }
+  }
+
+  &-red {
+    @include var.font-standard-14-400-white;
+
+    background: var(--red500);
+
+    &:hover, &:focus {
+      outline: none;
+      background: var(--red400);
+    }
+  }
+}

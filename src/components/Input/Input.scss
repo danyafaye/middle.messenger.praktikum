@@ -1,0 +1,60 @@
+@use '@/styles/var';
+
+.input {
+  background: var(--black700);
+  color: var(--white);
+  border: 1px solid var(--gray900);
+  padding: 0 10px;
+  min-height: 38px;
+  border-radius: 6px;
+  transition: border .2s ease-in-out;
+  outline: none;
+
+  &:hover {
+    border: 1px solid var(--gray800);
+  }
+
+  &:active, &:focus {
+    box-shadow: 0 0 12px 2px var(--gray900);
+    border: 1px solid var(--gray600);
+  }
+
+  &::placeholder {
+    @include var.font-small-12-400-gray;
+  }
+
+  &-wrapper {
+    row-gap: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &-invalid {
+    border: 1px solid var(--red500);
+
+    &:hover, &:active, &:focus {
+      border: 1px solid var(--red400);
+    }
+
+    &:active, &:focus {
+      box-shadow: 0 0 4px 1px var(--red400);
+    }
+  }
+
+  &-error {
+    width: 100%;
+    color: var(--red500);
+    display: none;
+
+    @include var.font-small-12-400;
+
+    &-visible {
+      display: inline;
+    }
+  }
+
+  &-label {
+    @include var.font-standard-14-400-white;
+  }
+}
