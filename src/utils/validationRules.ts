@@ -46,6 +46,10 @@ export const VALIDATION_RULES: Record<string, [RegExp, string]> = {
 };
 
 export const validateField = (fieldName: string, value: string): [boolean, string] => {
+  if (!VALIDATION_RULES[fieldName]) {
+    return [true, ''];
+  }
+
   const [rule, message] = VALIDATION_RULES[fieldName];
   if (!rule) {
     return [true, ''];

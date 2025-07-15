@@ -14,9 +14,9 @@ const counterTemplate: string = `
 </div>
 `;
 
-export function createCounter(props: CounterProps): BlockInstance {
+export const createCounter = (props: CounterProps): BlockInstance => {
   return createBlock({
     ...props,
     render: () => counterTemplate,
   });
-}
+};

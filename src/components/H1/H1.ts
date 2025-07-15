@@ -9,9 +9,9 @@ type H1Props = {
 
 const template = `<h1 class="heading-first">{{text}}</h1>`;
 
-export function createH1(props: H1Props): BlockInstance {
+export const createH1 = (props: H1Props): BlockInstance => {
   return createBlock({
     ...props,
     render: () => template,
   });
-}
+};

@@ -1,7 +1,11 @@
 import { createBlock } from '@framework';
 import { createButton, createInput, createLink, createTitle } from '@components';
-import { bindFieldValidation, bindFormSubmit, navigateTo } from '@utils';
-import { BlockInstance } from '@models';
+import { bindFieldValidation, bindFormSubmit } from '@utils';
+import { BlockInstance, BlockProps } from '@models';
+import { router, ROUTES } from '@router';
+import { SignInData, UserData } from '@api';
+import { authService } from '@services';
+import { connect } from '@store';
 
 //language=hbs
 const template = `<main class="content-wrapper">
@@ -50,18 +54,35 @@ const createFormBlock = (): BlockInstance => {
     InputPassword: inputPassword,
     ButtonSubmit: buttonSubmit,
     events: {
-      submit: (e: Event) => {
+      submit: async (e: Event) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         const inputs = form.querySelectorAll('input');
-        bindFormSubmit(inputs, 'Данные для входа:');
+        const formData = await bindFormSubmit<SignInData>(inputs, 'Данные для входа:');
+
+        if (formData) {
+          try {
+            await authService.login(formData);
+            router.navigate(ROUTES.CHAT);
+          } catch (error) {
+            console.error(`Ошибка при входе: ${error}`);
+          }
+        }
       },
     },
     render: () => formTemplate,
   });
 };
 
-export const createSignInPage = () => {
+type SignInPageProps = BlockProps & {
+  user?: UserData;
+};
+
+const mapStateToProps = (state: Record<string, unknown>): Partial<SignInPageProps> => ({
+  user: state.user as UserData | undefined,
+});
+
+const SignInPageBase = (props: SignInPageProps) => {
   const title = createTitle({
     text: 'Вход',
   });
@@ -71,8 +92,8 @@ export const createSignInPage = () => {
     id: 'link-to-sign-up',
     text: 'Нет аккаунта?',
     variant: 'secondary',
-    onClick: (e) => {
-      navigateTo(e, 'sign-up');
+    onClick: () => {
+      router.navigate(ROUTES.SIGN_UP);
     },
   });
 
@@ -80,6 +101,20 @@ export const createSignInPage = () => {
     Title: title,
     Link: link,
     Form: formBlock,
+    componentDidMount: () => {
+      if (props.user) {
+        router.navigate(ROUTES.CHAT);
+      }
+    },
+    componentDidUpdate: (oldProps: BlockProps, newProps: BlockProps) => {
+      if (!oldProps.user && newProps.user) {
+        router.navigate(ROUTES.CHAT);
+      }
+
+      return true;
+    },
     render: () => template,
-  });
+  }) as BlockInstance;
 };
+
+export const createSignInPage = connect<SignInPageProps>(mapStateToProps, SignInPageBase);

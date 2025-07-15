@@ -18,14 +18,16 @@ export const createEventBus = <Events extends Record<string, unknown[]>>(): Even
 
   const off = <K extends keyof Events>(event: K, callback: Listener<Events[K]>) => {
     if (!listeners[event]) {
-      throw new Error(`Нет события: ${String(event)}`);
+      console.warn(`No listeners for event: ${String(event)}`);
+      return;
     }
     listeners[event] = listeners[event]!.filter((listener) => listener !== callback);
   };
 
   const emit = <K extends keyof Events>(event: K, ...args: Events[K]) => {
     if (!listeners[event]) {
-      throw new Error(`Нет события: ${String(event)}`);
+      console.warn(`No listeners for event: ${String(event)}`);
+      return;
     }
     listeners[event]!.forEach((listener) => listener(...args));
   };
