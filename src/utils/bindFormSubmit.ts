@@ -1,8 +1,8 @@
 import { showOrHideError, validateField } from '@utils';
 
-export const bindFormSubmit = (
+export const bindFormSubmit = async <T = Record<string, string>>(
   inputs: NodeListOf<HTMLInputElement>,
-  message: string = 'Данные формы'
+  logMessage?: string
 ) => {
   let isValid = true;
   inputs.forEach((inp) => {
@@ -13,12 +13,20 @@ export const bindFormSubmit = (
       isValid = false;
     }
   });
+
   if (isValid) {
-    const data: Record<string, string> = {};
+    const data = {} as T;
     inputs.forEach((inp) => {
       const inputEl = inp as HTMLInputElement;
-      data[inputEl.name] = inputEl.value;
+      (data as Record<string, string>)[inputEl.name] = inputEl.value;
     });
-    console.log(message, data);
+
+    if (logMessage) {
+      console.log(logMessage, data);
+    }
+
+    return data;
   }
+
+  return null;
 };

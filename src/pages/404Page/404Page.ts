@@ -1,7 +1,7 @@
 import { BlockInstance } from '@models';
 import { createH1, createLink, createTitle } from '@components';
 import { createBlock } from '@framework';
-import { navigateTo } from '@utils';
+import { router, ROUTES } from '@router';
 
 //language=hbs
 const template: string = `
@@ -35,8 +35,8 @@ export const create404Page = (): BlockInstance => {
     variant: 'primary',
     size: 'big',
     text: 'Назад на главную',
-    onClick: (e) => {
-      navigateTo(e, 'sign-up');
+    onClick: () => {
+      router.navigate(ROUTES.SIGN_UP);
     },
   });
   return createBlock({

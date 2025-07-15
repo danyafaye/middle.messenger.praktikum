@@ -1,19 +1,11 @@
 import { BlockInstance } from '@models';
 import { createBlock } from '@framework';
+import { createAvatar, createCounter } from '@components';
+import { ChatsListInfo } from '@api';
+import { formatMessageTime, getAvatarLink } from '@utils';
 
 import './DialogCard.scss';
-import { createAvatar, createCounter } from '@components';
 
-type DialogCardProps = {
-  message: string;
-  unreadCount: number;
-  personName: string;
-  time: string;
-  avatarImg?: string;
-  onClick?: (e: Event) => void;
-};
-
-//language=hbs
 const dialogCardTemplate: string = `
 <section class="dialog-card">
   {{{ Avatar }}}
@@ -24,29 +16,33 @@ const dialogCardTemplate: string = `
 </section>
 `;
 
-export function createDialogCard(props: DialogCardProps): BlockInstance {
+export const createDialogCard = (chat: ChatsListInfo, onClick: () => void): BlockInstance => {
+  const message = chat.last_message?.content || 'Нет сообщений';
+  const time = formatMessageTime(chat.last_message?.time);
+  const avatarImg = getAvatarLink(chat.avatar);
+
   const avatar = createAvatar({
-    avatarImgLink: props.avatarImg,
-    name: props.personName,
+    avatarImgLink: avatarImg,
+    name: chat.title,
     avatarSize: 'big',
-    message: props.message,
+    message: message,
   });
 
   const counter = createCounter({
-    count: props.unreadCount,
+    count: chat.unread_count,
   });
 
   return createBlock({
-    ...props,
+    message,
+    unreadCount: chat.unread_count,
+    personName: chat.title,
+    time,
+    avatarImg,
     Avatar: avatar,
-    Counter: props.unreadCount !== 0 ? counter : null,
+    Counter: chat.unread_count !== 0 ? counter : null,
     events: {
-      click: (e: Event) => {
-        if (props.onClick) {
-          props.onClick(e);
-        }
-      },
+      click: onClick || (() => {}),
     },
     render: () => dialogCardTemplate,
   });
-}
+};

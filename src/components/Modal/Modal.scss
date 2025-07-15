@@ -1,0 +1,48 @@
+@use '@/styles/var';
+
+.modal {
+  &-wrapper {
+    position: relative;
+    margin: auto;
+    width: 300px;
+    padding: 16px;
+    gap: 24px;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid var(--gray900);
+    background: var(--black1000);
+
+    &[open] {
+      display: flex;
+    }
+
+    &::backdrop {
+      background: var(--black800);
+      opacity: .75;
+    }
+  }
+
+  &-header {
+    text-align: center;
+
+    @include var.font-standard-16-400-gray;
+  }
+}
+
+.close-wrapper {
+  position: absolute;
+  cursor: pointer;
+  right: 16px;
+  top: 18px;
+}
+
+.modal-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-file-upload {
+  width: 100%;
+}

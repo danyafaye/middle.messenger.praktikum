@@ -9,10 +9,6 @@
   cursor: pointer;
   gap: 4px;
 
-  &:hover {
-    background-color: var(--gray1000);
-  }
-
   &-info {
     display: flex;
     flex-direction: column;

@@ -75,12 +75,25 @@ export const createBlock = <T extends BlockProps = {}>(
 
   const setProps = (nextProps: Partial<T>): void => {
     if (!nextProps) return;
-    Object.assign(_props, nextProps);
+
+    const oldProps = { ..._props };
+
+    const { children: newChildren, props: newRegularProps } = getChildrenPropsAndProps(nextProps);
+
+    Object.assign(_props, newRegularProps);
+
+    Object.assign(children, newChildren);
+
+    eventBus.emit(BLOCK_EVENTS.COMPONENT_DID_UPDATE, oldProps, { ..._props });
   };
 
   const setLists = (nextLists: Record<string, unknown[]>): void => {
     if (!nextLists) return;
+
+    const oldLists = { ..._lists };
     Object.assign(_lists, nextLists);
+
+    eventBus.emit(BLOCK_EVENTS.COMPONENT_DID_UPDATE, oldLists, { ..._lists });
   };
 
   const getContent = (): HTMLElement => {
@@ -91,71 +104,136 @@ export const createBlock = <T extends BlockProps = {}>(
   const _createDocumentElement = (tagName: string): HTMLTemplateElement =>
     document.createElement(tagName) as HTMLTemplateElement;
 
+  let isRendering = false;
+
   const _render = (): void => {
-    if (_element) {
-      _removeEvents();
+    if (isRendering) {
+      return;
     }
 
-    const propsAndStubs = { ..._props };
-    const tmpId = makeUUID();
+    try {
+      isRendering = true;
 
-    Object.entries(children).forEach(([key, child]) => {
-      propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
-    });
-    Object.entries(_lists).forEach(([key]) => {
-      propsAndStubs[key] = `<div data-id="__l_${tmpId}"></div>`;
-    });
-
-    const fragment = _createDocumentElement('template');
-    fragment.innerHTML = Handlebars.compile(render())(propsAndStubs);
-
-    Object.values(children).forEach((child) => {
-      const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
-      if (stub) {
-        stub.replaceWith(child.getContent());
+      if (_element) {
+        _removeEvents();
       }
-    });
 
-    Object.entries(_lists).forEach(([, listItems]) => {
-      const listCont = _createDocumentElement('template');
-      listItems.forEach((item) => {
-        if (item && typeof (item as BlockInstance).getContent === 'function') {
-          listCont.content.append((item as BlockInstance).getContent());
-        } else {
-          listCont.content.append(document.createTextNode(String(item)));
+      const propsAndStubs = { ..._props };
+      const listIds: Record<string, string> = {};
+
+      Object.entries(children).forEach(([key, child]) => {
+        propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
+      });
+      Object.entries(_lists).forEach(([key]) => {
+        const listId = makeUUID();
+        listIds[key] = listId;
+        propsAndStubs[key] = `<div data-id="__l_${listId}"></div>`;
+      });
+
+      const fragment = _createDocumentElement('template');
+      const compiledTemplate = Handlebars.compile(render());
+      const htmlString = compiledTemplate(propsAndStubs);
+
+      fragment.innerHTML = htmlString;
+
+      Object.values(children).forEach((child) => {
+        const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
+        if (stub) {
+          stub.replaceWith(child.getContent());
         }
       });
-      const stub = fragment.content.querySelector(`[data-id="__l_${tmpId}"]`);
-      if (stub) {
-        stub.replaceWith(listCont.content);
+
+      Object.entries(_lists).forEach(([key, listItems]) => {
+        const listCont = _createDocumentElement('template');
+        listItems.forEach((item) => {
+          if (item && typeof (item as BlockInstance).getContent === 'function') {
+            listCont.content.append((item as BlockInstance).getContent());
+          } else {
+            listCont.content.append(document.createTextNode(String(item)));
+          }
+        });
+        const stub = fragment.content.querySelector(`[data-id="__l_${listIds[key]}"]`);
+        if (stub) {
+          stub.replaceWith(listCont.content);
+        }
+      });
+
+      const newElement = fragment.content.firstElementChild as HTMLElement;
+
+      if (!newElement) {
+        console.error('Не удалось создать новый элемент из template');
+        return;
       }
-    });
 
-    const newElement = fragment.content.firstElementChild as HTMLElement;
-    if (_element && newElement) {
-      _element.replaceWith(newElement);
-    }
-    _element = newElement;
+      if (_element && newElement) {
+        const parentElement = _element.parentElement;
+        const nextSibling = _element.nextSibling;
 
-    _addEvents();
-    addAttributes();
+        _element.remove();
 
-    if (typeof _props.afterRender === 'function') {
-      _props.afterRender(instance);
+        if (parentElement) {
+          if (nextSibling) {
+            parentElement.insertBefore(newElement, nextSibling);
+          } else {
+            parentElement.appendChild(newElement);
+          }
+        }
+
+        _element = newElement;
+      } else if (!_element && newElement) {
+        _element = newElement;
+      }
+
+      _addEvents();
+      addAttributes();
+
+      if (typeof _props.afterRender === 'function') {
+        _props.afterRender(instance);
+      }
+    } catch (error) {
+      console.error('Ошибка в _render:', error);
+    } finally {
+      isRendering = false;
     }
   };
 
   const _componentDidMount = (): void => {
+    if (typeof _props.componentDidMount === 'function') {
+      _props.componentDidMount(instance);
+    }
     Object.values(children).forEach((child) => child.dispatchComponentDidMount());
   };
 
+  let isUpdating = false;
+
   const _componentDidUpdate = (oldProps: BlockProps, newProps: BlockProps): void => {
-    const response =
-      typeof _props.componentDidUpdate === 'function'
-        ? _props.componentDidUpdate(oldProps, newProps)
-        : true;
-    if (!response) return;
-    _render();
+    if (isUpdating) return;
+
+    try {
+      isUpdating = true;
+      const response =
+        typeof _props.componentDidUpdate === 'function'
+          ? _props.componentDidUpdate(oldProps, newProps)
+          : true;
+      if (!response) return;
+      _render();
+    } finally {
+      isUpdating = false;
+    }
+  };
+
+  const _componentWillUnmount = (): void => {
+    if (typeof _props.componentWillUnmount === 'function') {
+      _props.componentWillUnmount(instance);
+    }
+
+    _removeEvents();
+
+    Object.values(children).forEach((child) => {
+      if (typeof child.dispatchComponentWillUnmount === 'function') {
+        child.dispatchComponentWillUnmount();
+      }
+    });
   };
 
   const init = (): void => {
@@ -167,6 +245,7 @@ export const createBlock = <T extends BlockProps = {}>(
   eventBus.on(BLOCK_EVENTS.INIT, init);
   eventBus.on(BLOCK_EVENTS.COMPONENT_DID_MOUNT, _componentDidMount);
   eventBus.on(BLOCK_EVENTS.COMPONENT_DID_UPDATE, _componentDidUpdate);
+  eventBus.on(BLOCK_EVENTS.COMPONENT_WILL_UNMOUNT, _componentWillUnmount);
   eventBus.on(BLOCK_EVENTS.RENDER, _render);
 
   instance = {
@@ -180,6 +259,9 @@ export const createBlock = <T extends BlockProps = {}>(
     getContent,
     dispatchComponentDidMount: () => {
       eventBus.emit(BLOCK_EVENTS.COMPONENT_DID_MOUNT);
+    },
+    dispatchComponentWillUnmount: () => {
+      eventBus.emit(BLOCK_EVENTS.COMPONENT_WILL_UNMOUNT);
     },
     show: () => {
       const content = getContent();

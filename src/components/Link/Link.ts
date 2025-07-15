@@ -24,16 +24,17 @@ const linkTemplate: string = `
 </a>
 `;
 
-export function createLink(props: LinkProps): BlockInstance {
+export const createLink = (props: LinkProps): BlockInstance => {
   return createBlock({
     ...props,
     events: {
       click: (e: Event) => {
         if (props.onClick) {
+          e.preventDefault();
           props.onClick(e);
         }
       },
     },
     render: () => linkTemplate,
   });
-}
+};

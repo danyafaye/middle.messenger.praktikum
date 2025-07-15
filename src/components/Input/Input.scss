@@ -10,6 +10,10 @@
   transition: border .2s ease-in-out;
   outline: none;
 
+  &[type='file'] {
+    display: none;
+  }
+
   &:hover {
     border: 1px solid var(--gray800);
   }
@@ -56,5 +60,14 @@
 
   &-label {
     @include var.font-standard-14-400-white;
+
+    &-file {
+      color: var(--blue500);
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }

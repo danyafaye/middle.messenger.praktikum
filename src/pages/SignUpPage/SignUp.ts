@@ -1,34 +1,39 @@
 import { createBlock } from '@framework';
 import { createButton, createInput, createLink, createTitle } from '@components';
-import { bindFieldValidation, bindFormSubmit, navigateTo } from '@utils';
+import { bindFieldValidation, bindFormSubmit } from '@utils';
+import { BlockInstance, BlockProps } from '@models';
+import { router, ROUTES } from '@router';
+import { authApi, SignUpData, UserData } from '@api';
+import { connect } from '@store';
 
 //language=hbs
-const template = `<main class="content-wrapper">
-    <section class="form-wrapper">
-        {{{ Title }}}
-        {{{ Form }}}
-        {{{ Link }}}
-    </section>
-</main>`;
+const template = `
+    <main class="content-wrapper">
+        <section class="form-wrapper">
+            {{{ Title }}}
+            {{{ Form }}}
+            {{{ Link }}}
+        </section>
+    </main>`;
 
 //language=hbs
 const formTemplate = `
-<form class="form" method="post">
-    {{{ InputMail }}}
-    <div class="form-row">
-        {{{ InputLogin }}}
-        {{{ InputPhone }}}
-    </div>
-    <div class="form-row">
-        {{{ InputName }}}
-        {{{ InputSurname }}}
-    </div>
-    <div class="form-row">
-        {{{ InputPass }}}
-        {{{ InputRepeatPass }}}
-    </div>
-    {{{ Button }}}
-</form>
+    <form class="form" method="post">
+        {{{ InputMail }}}
+        <div class="form-row">
+            {{{ InputLogin }}}
+            {{{ InputPhone }}}
+        </div>
+        <div class="form-row">
+            {{{ InputName }}}
+            {{{ InputSurname }}}
+        </div>
+        <div class="form-row">
+            {{{ InputPass }}}
+            {{{ InputRepeatPass }}}
+        </div>
+        {{{ Button }}}
+    </form>
 `;
 
 const createFormBlock = () => {
@@ -118,18 +123,43 @@ const createFormBlock = () => {
     InputRepeatPass: inputRepeatPass,
     Button: button,
     events: {
-      submit: (e: Event) => {
+      submit: async (e: Event) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         const inputs = form.querySelectorAll('input');
-        bindFormSubmit(inputs, 'Данные для регистрации:');
+
+        let formData = await bindFormSubmit<SignUpData>(inputs, 'Данные формы регистрации');
+
+        if (formData) {
+          const { repeat_password, ...filteredData } = formData as SignUpData & {
+            repeat_password?: string;
+          };
+          formData = filteredData as SignUpData;
+        }
+
+        if (formData) {
+          try {
+            await authApi.signUp(formData);
+            router.navigate(ROUTES.SIGN_IN);
+          } catch (error) {
+            console.error('Ошибка при регистрации:', error);
+          }
+        }
       },
     },
     render: () => formTemplate,
   });
 };
 
-export const createSignUpPage = () => {
+type SignUpPageProps = BlockProps & {
+  user?: UserData;
+};
+
+const mapStateToProps = (state: Record<string, unknown>): Partial<SignUpPageProps> => ({
+  user: state.user as UserData | undefined,
+});
+
+const SignUpPageBase = (props: SignUpPageProps) => {
   const title = createTitle({
     text: 'Регистрация',
   });
@@ -138,8 +168,8 @@ export const createSignUpPage = () => {
     id: 'link-to-sign-in',
     text: 'Войти',
     variant: 'secondary',
-    onClick: (e) => {
-      navigateTo(e, '/');
+    onClick: () => {
+      router.navigate(ROUTES.SIGN_IN);
     },
   });
   const formBlock = createFormBlock();
@@ -149,5 +179,19 @@ export const createSignUpPage = () => {
     Link: link,
     Form: formBlock,
     render: () => template,
-  });
+    componentDidMount: () => {
+      if (props.user) {
+        router.navigate(ROUTES.CHAT);
+      }
+    },
+    componentDidUpdate: (oldProps: BlockProps, newProps: BlockProps) => {
+      if (!oldProps.user && newProps.user) {
+        router.navigate(ROUTES.CHAT);
+      }
+
+      return true;
+    },
+  }) as BlockInstance;
 };
+
+export const createSignUpPage = connect(mapStateToProps, SignUpPageBase);

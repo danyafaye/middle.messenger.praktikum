@@ -2,6 +2,7 @@
 
 //variables
 :root {
+  --black1000: #000;
   --black800: #0f0f0f;
   --black700: #0a0a0a;
   --white: #fff;
@@ -51,7 +52,7 @@ body {
 
 .content-wrapper {
   width: 100%;
-  height: calc(100% - 60px);
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -77,6 +78,7 @@ body {
 
 .form {
   width: 100%;
+  max-width: 496px;
   display: flex;
   flex-direction: column;
   row-gap: 16px;
@@ -87,7 +89,7 @@ body {
     column-gap: 16px;
   }
 
-  @include var.max-width-tablet{
+  @include var.max-width-tablet {
     &-row {
       display: flex;
       flex-direction: column;
@@ -124,6 +126,8 @@ body {
 
     &-icon {
       border-radius: 50%;
+      width: 162px;
+      height: 162px;
     }
 
     &-change {
@@ -233,7 +237,7 @@ body {
   }
 
   &-messages {
-    height: calc(100% - 127px);
+    height: calc(100% - 177px);
     overflow-y: auto;
     scrollbar-width: none;
   }
@@ -247,6 +251,38 @@ body {
 
     @include var.font-standard-18-400-gray;
   }
+
+  &-user {
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    &-item {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    &-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    &-remove {
+      background: none;
+      cursor: pointer;
+    }
+  }
 }
 
 .conversation {
@@ -257,10 +293,16 @@ body {
   &-header {
     display: flex;
     align-items: center;
+    cursor: pointer;
     justify-content: space-between;
     padding: 16px;
     border-bottom: var(--standard-border);
     background-color: var(--black700);
+
+    &-actions {
+      display: flex;
+      gap: 8px;
+    }
   }
 
   &-messages {
@@ -280,7 +322,7 @@ body {
     }
   }
 
-  &-message{
+  &-message {
     max-width: 50%;
     padding: 16px;
     display: inline-flex;
@@ -289,6 +331,11 @@ body {
     border-radius: 8px 8px 8px 0;
     align-items: flex-end;
     gap: 4px;
+
+    &-system {
+      background: none;
+      align-self: center;
+    }
 
     &-time {
       @include var.font-small-12-400-gray;
@@ -316,4 +363,13 @@ body {
 
 .show {
   opacity: 1;
+}
+
+.add-user-icon, .remove-user-icon {
+  color: var(--gray800);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--white);
+  }
 }
