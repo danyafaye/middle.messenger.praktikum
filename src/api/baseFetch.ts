@@ -17,12 +17,17 @@ export const createHTTPTransport = () => {
       }
       xhr.open(method, resultUrl);
       xhr.timeout = timeout;
+      xhr.withCredentials = true;
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
       });
 
       xhr.onload = () => {
-        resolve(xhr);
+        if (xhr.status >= 400) {
+          reject(xhr);
+        } else {
+          resolve(xhr);
+        }
       };
 
       xhr.onabort = () => reject(new Error('Request aborted'));

@@ -23,7 +23,7 @@ const buttonTemplate: string = `
 </button>
 `;
 
-export function createButton(props: ButtonProps): BlockInstance {
+export const createButton = (props: ButtonProps): BlockInstance => {
   return createBlock({
     ...props,
     colorType: props.colorType ? props.colorType : 'standard',
@@ -37,4 +37,4 @@ export function createButton(props: ButtonProps): BlockInstance {
     },
     render: () => buttonTemplate,
   });
-}
+};
