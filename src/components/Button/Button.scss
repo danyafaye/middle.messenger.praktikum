@@ -3,11 +3,11 @@
 .button {
   //common button styles
 
-  transition: background-color .2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
 
   svg {
     path {
-      transition: color .2s ease-in-out;
+      transition: color 0.2s ease-in-out;
     }
   }
 
@@ -47,7 +47,8 @@
 
     @include var.font-standard-14-400-black;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       outline: none;
       background: var(--gray700);
     }
@@ -58,7 +59,8 @@
 
     background: var(--blue800);
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       outline: none;
       background: var(--blue700);
     }
@@ -69,7 +71,8 @@
 
     background: var(--red500);
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       outline: none;
       background: var(--red400);
     }

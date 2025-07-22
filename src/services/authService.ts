@@ -1,6 +1,7 @@
 import { router, ROUTES } from '@router';
 import { store } from '@store';
 import { authApi, SignInData, UserData } from '@api';
+
 import { fetchChats } from './chatService';
 
 let pollingInterval: number | null = null;

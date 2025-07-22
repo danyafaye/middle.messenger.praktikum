@@ -1,6 +1,7 @@
+import Handlebars from 'handlebars';
+
 import { BlockInstance } from '@models';
 import { createBlock } from '@framework';
-import Handlebars from 'handlebars';
 import { fullCompare } from '@utils';
 import './Input.scss';
 

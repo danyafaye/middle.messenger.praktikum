@@ -59,7 +59,7 @@ $tablet-media-width: 768px;
 @mixin font-small-12-400-gray {
   @include font-small-12-400;
 
-  color: var(--gray800)
+  color: var(--gray800);
 }
 
 @mixin font-standard-14-400-black {
