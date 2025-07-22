@@ -5,10 +5,10 @@
   gap: 8px;
   align-items: center;
   text-decoration: none;
-  transition: color .2s ease-in-out;
+  transition: color 0.2s ease-in-out;
 
   path {
-    transition: color .2s ease-in-out;
+    transition: color 0.2s ease-in-out;
   }
 
   @include var.font-standard-14-400;

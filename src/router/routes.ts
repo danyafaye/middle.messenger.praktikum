@@ -110,7 +110,11 @@ const createRouter = (rootId: string) => {
     window.addEventListener('popstate', onRoute);
   };
 
-  return { use, navigate, start };
+  const clear = () => {
+    routes.length = 0;
+  };
+
+  return { use, navigate, start, clear };
 };
 
 export const router = createRouter('app');

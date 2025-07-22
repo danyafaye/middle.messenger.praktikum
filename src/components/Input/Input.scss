@@ -7,7 +7,7 @@
   padding: 0 10px;
   min-height: 38px;
   border-radius: 6px;
-  transition: border .2s ease-in-out;
+  transition: border 0.2s ease-in-out;
   outline: none;
 
   &[type='file'] {
@@ -18,7 +18,8 @@
     border: 1px solid var(--gray800);
   }
 
-  &:active, &:focus {
+  &:active,
+  &:focus {
     box-shadow: 0 0 12px 2px var(--gray900);
     border: 1px solid var(--gray600);
   }
@@ -37,11 +38,14 @@
   &-invalid {
     border: 1px solid var(--red500);
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
       border: 1px solid var(--red400);
     }
 
-    &:active, &:focus {
+    &:active,
+    &:focus {
       box-shadow: 0 0 4px 1px var(--red400);
     }
   }

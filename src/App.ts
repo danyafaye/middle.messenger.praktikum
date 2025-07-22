@@ -1,4 +1,5 @@
 import Handlebars from 'handlebars';
+
 import { fullCompare, hasItems, isEmpty } from '@utils';
 import { routeList, router } from '@router';
 import { authService } from '@services';
