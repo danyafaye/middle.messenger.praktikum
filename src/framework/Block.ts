@@ -1,8 +1,11 @@
 import Handlebars from 'handlebars';
-import { createEventBus } from './EventBus';
+import { v4 as makeUUID } from 'uuid';
+
 import { getChildrenPropsAndProps, makePropsProxy } from '@utils';
 import { BLOCK_EVENTS, BlockEventHandler, BlockEvents, BlockInstance, BlockProps } from '@models';
-import { v4 as makeUUID } from 'uuid';
+
+import { createEventBus } from './EventBus';
+
 
 export const createBlock = <T extends BlockProps = {}>(
   propsWithChildren: T = {} as T
